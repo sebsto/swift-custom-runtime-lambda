@@ -1,0 +1,16 @@
+#!/bin/sh
+EXECUTABLE=$LAMBDA_TASK_ROOT/"$(echo $_HANDLER | cut -d. -f1)"
+
+echo "handler    = $_HANDLER"
+echo "executable = $EXECUTABLE"
+echo "endpoint   = $AWS_LAMBDA_RUNTIME_API"
+
+# Adjust file name containing root CA's (required to make a SSL connections from the Lambda function)
+# Swift's Linux implementation expects /etc/ssl/certs/ca-certificates.crt
+# Amazon Linux uses etc/ssl/certs/ca-bundle-trust.crt instead 
+ln -s /etc/ssl/certs/ca-bundle.trust.crt /etc/ssl/certs/ca-certificates.crt
+
+# Execute the handler function from the script
+/opt/lib/ld-linux-x86-64.so.2 --library-path /opt/lib $EXECUTABLE 
+
+    
