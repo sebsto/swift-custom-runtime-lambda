@@ -1,4 +1,10 @@
 #!/bin/sh +x
+
+# This is a test file to show bash based bootstrap.  
+# It does not work with current version of the swift code in this repo.
+# Do not use this in production as this bash based bootstrap takes >1000ms execution time 
+# due to many small processes fork and standard pipes being used to communicate between processes.
+
 EXECUTABLE=$LAMBDA_TASK_ROOT/"$(echo $_HANDLER | cut -d. -f1)"
 
 # Processing
