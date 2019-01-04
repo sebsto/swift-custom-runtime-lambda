@@ -10,12 +10,14 @@ BUILD_DIR=.build
 EXECUTABLE_NAME=$PROJECT_DIR
 LAMBDA_ZIP=function.zip
 
+BUILD_TYPE=release #debug or release
+
 echo "Building"
-docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift:4.2.1 /bin/bash -c "cd hello && swift build"
+docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift:4.2.1 /bin/bash -c "cd hello && swift build -c $BUILD_TYPE"
 
 echo "Packaging"
 cp bootstrap $LAMBDA_DIR
-cp $BUILD_DIR/x86_64-unknown-linux/debug/$EXECUTABLE_NAME $LAMBDA_DIR
+cp $BUILD_DIR/x86_64-unknown-linux/$BUILD_TYPE/$EXECUTABLE_NAME $LAMBDA_DIR
 
 rm $LAMBDA_ZIP 2>/dev/null
 pushd $LAMBDA_DIR >/dev/null 
