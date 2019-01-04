@@ -1,3 +1,10 @@
+//
+// LambdaRuntime API implementation for Swift 4
+//
+// Published under dual Apache 2.0 
+// https://www.apache.org/licenses/LICENSE-2.0
+// Sebastien Stormacq, (c) 2018 stormacq.com 
+//
 import Foundation
 
 import LambdaRuntime
