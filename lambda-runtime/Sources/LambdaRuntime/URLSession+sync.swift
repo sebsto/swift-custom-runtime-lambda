@@ -17,7 +17,7 @@ import LoggerAPI
 
 extension URLSession {
 
-    func synchronousDataTask(with url: String) -> (Data?, HTTPURLResponse?, Error?) {
+    public func synchronousDataTask(with url: String) -> (Data?, HTTPURLResponse?, Error?) {
         if let realUrl = URL(string: url) {
             let urlRequest = URLRequest(url: realUrl)
             let (data, response, error) = synchronousDataTask(with: urlRequest)
@@ -28,13 +28,13 @@ extension URLSession {
         }
     }
 
-    func synchronousDataTask(with url: URL) -> (Data?, HTTPURLResponse?, Error?) {
+    public func synchronousDataTask(with url: URL) -> (Data?, HTTPURLResponse?, Error?) {
         let urlRequest = URLRequest(url: url)
         let (data, response, error) = synchronousDataTask(with: urlRequest)
         return (data, response as? HTTPURLResponse, error)
     }
 
-    func synchronousDataTask(with urlrequest: URLRequest) -> (data: Data?, response: URLResponse?, error: Error?) {
+    public func synchronousDataTask(with urlrequest: URLRequest) -> (data: Data?, response: URLResponse?, error: Error?) {
         
         var data: Data?
         var response: URLResponse?

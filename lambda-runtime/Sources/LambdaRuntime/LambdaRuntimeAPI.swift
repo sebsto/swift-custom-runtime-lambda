@@ -18,32 +18,8 @@ protocol LambaRuntimeAPI {
 
 }
 
-class LambadRuntimeAPICommon {
-    func JSONify(jsonString : String) throws -> LambdaEvent  {
-        let jsonData = jsonString.data(using: .utf8)
-        return try JSONify(jsonData: jsonData)
-    }
-    
-    func JSONify(jsonData : Data?) throws -> LambdaEvent  {
-        
-        let d = String(data: jsonData!, encoding: .utf8)
-        Log.debug("Received : \(d!)")
-        var result : LambdaEvent = [:]
-        if let data = jsonData {
-            do {
-                result = try JSONSerialization.jsonObject(with: data, options: []) as! LambdaEvent
-            } catch {
-                Log.warning("\(data) can not be serialized to JSON Dictionary : \(error)")
-                throw error
-            }
-        }
-        
-        return result
-    }
-}
-
 // this is the class we'll use when running inside a Lambda container
-class LambdaContainerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI  {
+class LambdaContainerRuntimeAPI : LambaRuntimeAPI  {
     
     private let lambdaRuntimeAPIEndpoint : String
     
@@ -124,7 +100,7 @@ class LambdaContainerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI  {
 
 // this is the class we'll use when running inside a docker container for testing.
 // docker will use LAMBDA_EVENT environment variable or read event.json file in current directory
-class LambdaDockerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI {
+class LambdaDockerRuntimeAPI : LambaRuntimeAPI {
     
     private var invocationCounter = 0
     private let MAX_INVOCATIONS = 1

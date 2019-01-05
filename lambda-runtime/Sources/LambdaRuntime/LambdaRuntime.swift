@@ -137,3 +137,26 @@ public class LambdaRuntime {
         }
     }
 }
+
+public func JSONify(jsonString : String) throws -> LambdaEvent  {
+    let jsonData = jsonString.data(using: .utf8)
+    return try JSONify(jsonData: jsonData)
+}
+
+public func JSONify(jsonData : Data?) throws -> LambdaEvent  {
+    
+    let d = String(data: jsonData!, encoding: .utf8)
+    Log.debug("Received : \(d!)")
+    var result : LambdaEvent = [:]
+    if let data = jsonData {
+        do {
+            result = try JSONSerialization.jsonObject(with: data, options: []) as! LambdaEvent
+        } catch {
+            Log.warning("\(data) can not be serialized to JSON Dictionary : \(error)")
+            throw error
+        }
+    }
+    
+    return result
+}
+
