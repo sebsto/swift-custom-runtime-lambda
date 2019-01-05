@@ -74,7 +74,7 @@ public class LambdaRuntime {
     // main lambda event loop
     public func run() -> Void {
         
-        while (true && retry < MAX_RETRIES) {
+        while (retry < MAX_RETRIES) {
             
             var headers : [AnyHashable:Any]
             var event : LambdaEvent
