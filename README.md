@@ -111,12 +111,27 @@ Congrats if you're still reading and if you successfully managed to create your 
 
 ### Testing on Lambda
 
-TODO : include screenshots
-
 1. Connect to the AWS Lambda console
+
+![lambda console](/images/lambda_console.png)
+
 2. Click on "Functions" on the left, then on the name of the function that has been created just before (``SwiftLambdaHelloWorld`` if you did not change the default)
-3. Click on "TEST"... to prepare a dummy payload
-4. Click on "TEST" and observe the results
+
+![lambda function](/images/lambda_function.png) 
+
+3. Open the "Select a test event" drop down and click on "Configure test events" to prepare a dummy payload.
+
+    - Enter a simple JSON with ``"key1"`` as key name and any value.
+    - Enter a name for your test event, such as ``testevent``
+    - Click "Save" at the bottom of the screen 
+
+![test event](/images/test_event.png)
+
+4. Click on "TEST" to invoke your Swift based Lambda function.  When everything works well, you should see a green screen looking like this :
+
+![test result](/images/test_result.png)
+
+If you receive an error message, do not throw away your laptop immediately.  Usually, reading the error message will give you a clue of what went wrong.
 
 ### Developing on XCode
 
@@ -140,3 +155,4 @@ Here are some ideas :
 - Split the `package_function.sh` code in two scripts, one to `package` and one to `upload`
 - Create two distinct Swift project, one for the runtime and one for your Lambda function
 - Package the Swift RunTime as a shared library and in a distinct Lambda layer for reuse across multiple functions.
+- Allow the handler to make an HTTPS call.  Swift's implementation relies on ``libgnutls`` which expects to find its root certificates in ``/etc/ssl/certs/ca-certificates.crt`` directory.  That directory is absent on Amazon Linux.  **Currently calls to HTTPS endpoint will fail with an error** : ``error setting certificate verify locations:\n CAfile: /etc/ssl/certs/ca-certificates.crt\n CApath: /etc/ssl/certs``
