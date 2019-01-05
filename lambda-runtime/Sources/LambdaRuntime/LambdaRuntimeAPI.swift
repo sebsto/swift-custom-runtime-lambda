@@ -170,7 +170,7 @@ class LambdaDockerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI {
             Log.warning("LAMBDA_EVENT is not a valid JSON document\n\(error.localizedDescription)")
             
             // not working, let's try to read a file
-            let file = FileManager.default.currentDirectoryPath + "/event.json"
+            let file = FileManager.default.currentDirectoryPath + "/test/event.json"
             Log.debug("Let's try to read a file (\(file))")
             
             // content of the file

@@ -1,7 +1,10 @@
 #!/bin/sh +x
 
 # This is a test file to show bash based bootstrap.  
-# It does not work with current version of the swift code in this repo.
+#
+# It does not work with current version of the swift code in this repo because it passes 
+# the input event as an arg on the command line, which is ignored by the Swift code.
+#
 # Do not use this in production as this bash based bootstrap takes >1000ms execution time 
 # due to many small processes fork and standard pipes being used to communicate between processes.
 

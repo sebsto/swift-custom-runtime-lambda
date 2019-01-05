@@ -28,8 +28,7 @@ docker pull swift:4.2.1
 
 # Copy all shared libs required to run a swift executable to swift-layer/lib directory 
 echo "Copying runtime shared libs"
-LIBS=$(cat swift-linux-libs.txt)
-docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift /bin/bash -c "/$PROJECT_DIR/extract_libs.sh"
+docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift /bin/bash -c "/$PROJECT_DIR/shell-scripts/extract_libs.sh"
 
 # Package the lib as ZIP file for Lambda Layer
 echo "Packaging the layer"
