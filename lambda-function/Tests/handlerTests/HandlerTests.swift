@@ -27,7 +27,7 @@ final class HandlerTests: XCTestCase {
         let output = String(data: data, encoding: .utf8)
 
         //XCTAssertEqual(output, "Hello, world!\n")
-        XCTAssert(true)
+        XCTAssert(output != nil)
     }
 
     /// Returns path to the built products directory.
