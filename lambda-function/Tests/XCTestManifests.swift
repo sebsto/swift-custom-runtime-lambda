@@ -8,7 +8,7 @@
 
 import XCTest
 
-extension helloTests {
+extension HandlerTests {
     static let __allTests = [
         ("testExample", testExample),
     ]
