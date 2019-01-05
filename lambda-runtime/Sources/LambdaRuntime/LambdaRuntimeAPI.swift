@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import HeliumLogger
 import LoggerAPI
 
 protocol LambaRuntimeAPI {
@@ -50,13 +49,6 @@ class LambdaContainerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI  {
     
     init(_ apiEndpoint: String) {
         lambdaRuntimeAPIEndpoint = apiEndpoint
-
-        // initialize logger
-        let logger = HeliumLogger(.verbose)
-        Log.logger = logger
-        #if DEBUG
-            HeliumLogger.use(.debug)
-        #endif
     }
     
     func nextEvent() throws -> (headers : [AnyHashable:Any], event : LambdaEvent) {
@@ -136,15 +128,6 @@ class LambdaDockerRuntimeAPI : LambadRuntimeAPICommon, LambaRuntimeAPI {
     
     private var invocationCounter = 0
     private let MAX_INVOCATIONS = 1
-    
-    override init() {
-        // initialize logger
-        let logger = HeliumLogger(.verbose)
-        Log.logger = logger
-        #if DEBUG
-            HeliumLogger.use(.debug)
-        #endif
-    }
     
     // provide the next event by first attempting to read LAMBDA_EVENT env variable,
     // then tryig to read event.json in current directory.

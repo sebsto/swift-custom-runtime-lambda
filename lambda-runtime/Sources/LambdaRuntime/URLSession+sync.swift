@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import HeliumLogger
 import LoggerAPI
 
 /* 
@@ -36,13 +35,6 @@ extension URLSession {
     }
 
     func synchronousDataTask(with urlrequest: URLRequest) -> (data: Data?, response: URLResponse?, error: Error?) {
-        
-        // initialize logger
-        let logger = HeliumLogger(.verbose)
-        Log.logger = logger
-        #if DEBUG
-            HeliumLogger.use(.debug)
-        #endif
         
         var data: Data?
         var response: URLResponse?

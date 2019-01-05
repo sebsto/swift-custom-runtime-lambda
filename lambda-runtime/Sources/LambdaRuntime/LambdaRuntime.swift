@@ -24,13 +24,14 @@ public class LambdaRuntime {
     // also takes the custom handler that will be the core of the lambda function
     public init(_ handler: @escaping LambdaHandler) throws {
 
+        // initialize logger
+        let logger = HeliumLogger(.verbose)
+        Log.logger = logger
+        #if DEBUG
+            HeliumLogger.use(.debug)
+        #endif
+
         do {
-            // initialize logger
-            let logger = HeliumLogger(.verbose)
-            Log.logger = logger
-            #if DEBUG
-                HeliumLogger.use(.debug)
-            #endif
 
             // read environment variables
             let env =  ProcessInfo.processInfo.environment
