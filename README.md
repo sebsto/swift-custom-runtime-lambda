@@ -185,4 +185,16 @@ Here are some ideas :
 - Package the Swift RunTime as a shared library and in a distinct Lambda layer for reuse across multiple functions.
 - Allow the handler to make an HTTPS call.  Swift's implementation relies on ``libgnutls`` which expects to find its root certificates in ``/etc/ssl/certs/ca-certificates.crt`` directory.  That directory is absent on Amazon Linux.  **Currently calls to HTTPS endpoint will fail with an error** : ``error setting certificate verify locations:\n CAfile: /etc/ssl/certs/ca-certificates.crt\n CApath: /etc/ssl/certs``
 
+## References 
+
+Thank you for the pionering work made by these folks by first attempting to run Swift binaries inside Lambda function : 
+
+- Matthew Burke, Capital One : https://medium.com/capital-one-tech/serverless-computing-with-swift-f515ff052919
+
+- Justin Sanders : https://medium.com/@gigq/using-swift-in-aws-lambda-6e2a67a27e03
+
+- Claus Höfele, https://medium.com/@claushoefele/serverless-swift-2e8dce589b68
+
+- Toni Sutter : https://github.com/tonisuter/aws-lambda-swift
+
 [swift-libs]: https://github.com/sebsto/swift-custom-runtime-lambda/blob/master/shell-scripts/swift-linux-libs.txt
