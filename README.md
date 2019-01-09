@@ -195,6 +195,8 @@ Thank you for the pionering work made by these folks by first attempting to run 
 
 - Claus Höfele, https://medium.com/@claushoefele/serverless-swift-2e8dce589b68
 
+- Kohki Miki, Cookpad : https://github.com/giginet/aws-lambda-swift-runtime
+
 - Toni Sutter : https://github.com/tonisuter/aws-lambda-swift
 
 [swift-libs]: https://github.com/sebsto/swift-custom-runtime-lambda/blob/master/shell-scripts/swift-linux-libs.txt
