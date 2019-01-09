@@ -5,22 +5,30 @@ This library demonstrates how to use the [Swift programming language](https://sw
 This demo is based on the newly released (November 2018) [Lambda Layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html) and [Lambda Custom Runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html).
 The former allows to share common code and libraries across multiple Lambda functions.  The latter allows you to upload code written in any programming language by providing an API to fetch Lambda events and to communicate success and errors with the Lambda service.
 
+This demo project's objectives are twofold :
+- to provide a Swift implementation of the [AWS Lambda Runtime API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html), to let Swift Lambda function developers to focus on their code and not the underlying runtime, and
+- to provide a runtime environment for Swift applications to run on Amazon Linux, the host operating system for Lambda runtime.
+
 ## High Level Steps (TL;DR)
 
-Lambda functions run inside containers on top of Amazon Linux (see [re:Invent 2018's Deep Dive into Lambda](https://www.youtube.com/watch?v=QdzV04T_kec) to learn more about it), so this demo project's objective is to provide a runtime environment for Swift applications on Amazon Linux.
+Lambda functions run inside containers on top of Amazon Linux (see [re:Invent 2018's Deep Dive into Lambda](https://www.youtube.com/watch?v=QdzV04T_kec) to learn more about it).
 
-Apple and the community [are providing binaries](https://swift.org/download/#releases) for MacOS and Ubuntu Linux only, here are the high level steps to create a runtime environment on Amazon Linux.
+On the other side, Apple and the community [are providing binaries](https://swift.org/download/#releases) for MacOS and Ubuntu Linux only.
 
-We'll use Docker to develop and test this on our local machine, with the [official Docker Swift](https://hub.docker.com/_/swift/) image and [the official Amazon Linux](https://hub.docker.com/_/amazonlinux/) image.
+Here are the high level steps to create a runtime environment on Amazon Linux.
 
-Source code and binary files will be stored on our laptop, we'll use [docker volumes](https://docs.docker.com/storage/volumes/) to mount our project directory to the Swift and Amazon Linux containers.
+We'll use Docker to develop and test on our local machine, with the [official Docker Swift](https://hub.docker.com/_/swift/) image and [the official Amazon Linux](https://hub.docker.com/_/amazonlinux/) image.
 
-1. Copy from Swift docker image all runtime's shared libraries required to run a swift application, and package them in order to use them on Amazon Linux.  
+Your Lambda function source code and required binary files will be stored on our laptop, we'll use [docker volumes](https://docs.docker.com/storage/volumes/) to mount our project directory to the Swift and Amazon Linux containers.
+
+1. Copy from the [official Docker Swift](https://hub.docker.com/_/swift/) image all runtime's shared libraries required to run a swift application, and package them in order to use them on Amazon Linux.  
 This is a one time operation.  I am using [this manually crafted list of shared libraries][swift-libs] that works for me, some additional ones might be required depending on your code.
 
 2. Create a Lambda Layer containing all the runtime shared libraries. This is a one time operation. 
 
-3. Create a Lambda function containing a bootstrap script and your Swift binary 
+[1] and [2] are done with ``./shell-scripts/package_layer.sh``
+
+3. Create your Lambda function like the one below.
 
 ```swift
 import LambdaRuntime
@@ -33,17 +41,26 @@ func handler(context: Context, event: LambdaEvent) throws -> LambdaResponse {
 
 try LambdaRuntime(handler).run()
 ```
+
+This function leverages a ``LambdaRuntime`` class to interact with Lambda Runtime API.  This class is provided as part of this project, as well as the required Lambda's bootstrap script.
+
 4. Compile your swift code to Linux binaries.  We'll use the [official Docker Swift](https://hub.docker.com/_/swift/) image to do that.
 
-5. Test inside the Amazon Linux docker container and enjoy :-)
+[4] is done with ``./shell-scripts/build_function.sh``
+
+5. Test inside the Amazon Linux docker container
+
+[5] is done with ``./shell-scripts/run_function.sh``
+
+6. Deploy to AWS Lambda and enjoy !
+
+[6] is done with ``./shell-scripts/package_function.sh``
 
 ## Step by Step Instructions 
 
 ### Prerequisites
 
 I am using 2 docker containers for this project.  The first one is [the official Swift container](https://hub.docker.com/_/swift/), it will provide us with **a build environment** for our Swift source code.  The second one is the official Amazon Linux container, it will provide us **a runtime environment** to test our code before to upload it to AWS Lambda.
-
-To install the two images, you can type in a terminal
 
 ```bash
 docker pull swift:4.2.1
@@ -74,11 +91,11 @@ The project is made of a couple of shell scripts and three directories.  ``lambd
 ./shell-scripts/package_layer.sh
 ````
 
-This script starts a Swift docker container and runs [a shell script](https://github.com/sebsto/swift-custom-runtime-lambda/blob/master/shell-scripts/extract_libs.sh) to extract a [list of runtime libraries][swift-libs] that will be needed on Amazon Linux to run your Swift binary.  The libraries are copied to ``lambda/libs`` directory.  It will create a zip ``lambda/-lambda-swift-layer.zip`` and will create a layer on your AWS account, in the default region.
+This script starts a Swift docker container and runs [a shell script](https://github.com/sebsto/swift-custom-runtime-lambda/blob/master/shell-scripts/extract_libs.sh) to extract a [list of runtime libraries][swift-libs] that will be needed on Amazon Linux to run your Swift binary.  The libraries are copied to ``lambda/libs`` directory.  It will create a zip ``lambda/-lambda-swift-layer.zip`` and will create a Lambda layer on your AWS account, in the default region.
 
-The ARN of the newly create Layer version is stored in a file called ``lambda_layer_arn.txt``
+The ARN of the newly created Layer version is stored in a file called ``lambda_layer_arn.txt``
 
-3. Write your own function code.  The sample provided in this repo just reads the incoming parameter and create a simple JSON based response.
+3. Write your own function code.  The sample provided in this repo just reads the incoming event and create a simple JSON based response.
 
 ```swift
 import LambdaRuntime
@@ -146,7 +163,7 @@ If you receive an error message, do not throw away your laptop immediately.  Usu
 
 ### Developing on XCode
 
-Should you want to use Apple's XCode as IDE, you can create an XCode project from the [Swift package definition](Thttps://github.com/sebsto/swift-custom-runtime-lambda/blob/master/Package.swift).
+Should you want to use Apple's XCode as IDE, you can create an XCode project from the [Swift package definition](https://github.com/sebsto/swift-custom-runtime-lambda/blob/master/Package.swift).
 
 ```bash
 swift package generate-xcodeproj 
@@ -163,8 +180,8 @@ Here are some ideas :
 
 - Squeeze any bugs I did not detect
 - Add unit tests for the framework 
-- Split the `package_function.sh` code in two scripts, one to `package` and one to `upload`
-- Create two distinct Swift project, one for the runtime and one for your Lambda function
+- Split the `package_function.sh` code in two scripts, one to `package` and one to `deploy`
+- Create two distinct Swift projects, one for the runtime and one for your Lambda function
 - Package the Swift RunTime as a shared library and in a distinct Lambda layer for reuse across multiple functions.
 - Allow the handler to make an HTTPS call.  Swift's implementation relies on ``libgnutls`` which expects to find its root certificates in ``/etc/ssl/certs/ca-certificates.crt`` directory.  That directory is absent on Amazon Linux.  **Currently calls to HTTPS endpoint will fail with an error** : ``error setting certificate verify locations:\n CAfile: /etc/ssl/certs/ca-certificates.crt\n CApath: /etc/ssl/certs``
 
