@@ -5,6 +5,7 @@ LAMBDA_DIR=lambda
 BUILD_DIR=.build
 EXECUTABLE_NAME=HelloSwiftLambda # must be the same as in Package.swift
 LAMBDA_ZIP=function.zip
+BUILD_TYPE=debug
 
 which docker > /dev/null
 if [  ! $? ];
@@ -12,6 +13,12 @@ then
     echo "Docker is not installed, to use this script please install docker first"
     exit -1
 fi
+
+# Copying runtime files to lambda dir 
+echo "Packaging"
+mkdir $LAMBDA_DIR 2>/dev/null # create the directory, silently fails when it already exists
+cp ./shell-scripts/bootstrap $LAMBDA_DIR
+cp $BUILD_DIR/x86_64-unknown-linux/$BUILD_TYPE/$EXECUTABLE_NAME $LAMBDA_DIR
 
 # Pull the latest version of the official swift containers
 docker pull amazonlinux:2018.03
