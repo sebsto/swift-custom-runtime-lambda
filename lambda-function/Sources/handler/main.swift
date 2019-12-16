@@ -10,10 +10,25 @@ import Foundation
 import LambdaRuntime
 import LoggerAPI
 
-func handler(context: Context, event: LambdaEvent) throws -> LambdaResponse {
+import SwiftyRequest
+
+func handler(context: Context, event: LambdaEvent, completion: @escaping LambdaCallback) throws -> Void {
     Log.debug("Starting lambda handler")
 
-    return [ "result": event["key1"] ?? "no key1 provided" ]
+    let request = RestRequest(method: .get, url: "https://httpbin.org/get?value=\(event["key1"] ?? "no key1 provided")")
+    
+    request.responseString { result in
+        switch result {
+        case .success(let response):
+            print("Success")
+            completion([ "result": "\(response.body)" ])
+        case .failure(let error):
+            print("Failure")
+            completion([ "result": "\(error)" ])
+        }
+    }
+    
+    return
 
 }
 

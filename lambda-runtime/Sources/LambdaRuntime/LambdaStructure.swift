@@ -21,7 +21,9 @@ public typealias LambdaResponse = [String:Any]
 //
 // Lambda handler function
 //
-public typealias LambdaHandler = (Context, LambdaEvent) throws -> LambdaResponse
+public typealias LambdaCallback      = (LambdaResponse) -> Void
+public typealias AsyncLambdaHandler  = (Context, LambdaEvent, @escaping LambdaCallback) throws -> Void
+//public typealias SyncLambdaHandler   = (Context, LambdaEvent) throws -> LambdaResponse
 
 // this is the Context object passed to the handler.
 // constant values are identical accross invocation and are initialized from the container env variables

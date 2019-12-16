@@ -15,14 +15,18 @@ public class LambdaRuntime {
     
     private var context : Context
     private let runtimeApi : LambaRuntimeAPI
-    private let handler : LambdaHandler
+    private let handler : AsyncLambdaHandler
     
     private let MAX_RETRIES = 3
     private var retry = 0
-    
+
+//    // support sync handler for ease of programing
+//    public init(_ handler: SyncLambdaHandler) throws {
+//    }
+
     // initialize the runtime and load shared libraries, if any
     // also takes the custom handler that will be the core of the lambda function
-    public init(_ handler: @escaping LambdaHandler) throws {
+    public init(_ handler: @escaping AsyncLambdaHandler) throws {
 
         // initialize logger
         let logger = HeliumLogger(.verbose)
@@ -119,11 +123,23 @@ public class LambdaRuntime {
             
             // 3. call handler
             do {
-                let response = try handler(self.context, event)
-                Log.debug("Handler returned : \(response)")
+                var response: LambdaResponse?
+                let dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                do {
+                    try handler(self.context, event, { (result) in
+                        response = result
+                        Log.debug("Handler returned : \(String(describing: response))")
+                        dispatchGroup.leave()
+                    })
+                } catch {
+                    response = ["error" : "\(error)"]
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.wait()
                 
                 // 4. call success or error
-                try runtimeApi.invocationSuccess(awsRequestId: awsRequestId, response: response)
+                try runtimeApi.invocationSuccess(awsRequestId: awsRequestId, response: response!)
             } catch {
                 Log.debug("An error occured in the handler or when signaling the success :  \(error)")
                 runtimeApi.invocationError(awsRequestId: awsRequestId, error: error)

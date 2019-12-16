@@ -23,7 +23,8 @@ then
 fi
 
 echo "Building"
-docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift /bin/bash -c "cd $PROJECT_DIR && swift build -c $BUILD_TYPE"
+# TODO - should install zlib in a custom docker image
+docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift /bin/bash -c "apt-get update && apt-get install -y zlib1g-dev && cd $PROJECT_DIR && swift build -c $BUILD_TYPE"
 
 echo "Packaging"
 mkdir $LAMBDA_DIR 2>/dev/null # create the directory, silently fails when it already exists
@@ -36,7 +37,7 @@ zip $LAMBDA_ZIP bootstrap  $EXECUTABLE_NAME
 popd >/dev/null
 
 # create lambda function if it does not exist 
-echo "Deploying to AWS (creating IAM role and function as needed)"
+echo 'Deploying to AWS (creating IAM role and function as needed)'
 IAM_ROLE_ARN=$(aws iam list-roles --query "Roles[? RoleName == '$IAM_ROLE_NAME'].Arn" --output text)
 if [ -z "$IAM_ROLE_ARN" ];
 then
