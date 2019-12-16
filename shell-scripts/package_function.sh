@@ -23,7 +23,7 @@ then
 fi
 
 echo "Building"
-docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift:4.2.1 /bin/bash -c "cd $PROJECT_DIR && swift build -c $BUILD_TYPE"
+docker run  -it --rm  -v $(pwd):/$PROJECT_DIR --env PROJECT_DIR=/$PROJECT_DIR swift /bin/bash -c "cd $PROJECT_DIR && swift build -c $BUILD_TYPE"
 
 echo "Packaging"
 mkdir $LAMBDA_DIR 2>/dev/null # create the directory, silently fails when it already exists

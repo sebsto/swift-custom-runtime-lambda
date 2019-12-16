@@ -63,7 +63,7 @@ This function leverages a ``LambdaRuntime`` class to interact with Lambda Runtim
 I am using 2 docker containers for this project.  The first one is [the official Swift container](https://hub.docker.com/_/swift/), it will provide us with **a build environment** for our Swift source code.  The second one is the official Amazon Linux container, it will provide us **a runtime environment** to test our code before to upload it to AWS Lambda.
 
 ```bash
-docker pull swift:4.2.1
+docker pull swift:5.1.2
 docker pull amazonlinux:2018.03
 ```
 

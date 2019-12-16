@@ -1,5 +1,5 @@
 //
-// LambdaRuntime API implementation for Swift 4
+// LambdaRuntime API implementation for Swift 5
 //
 // Published under Apache 2.0 License
 // https://www.apache.org/licenses/LICENSE-2.0
@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import FoundationNetworking
+
 import LoggerAPI
 
 protocol LambaRuntimeAPI {
