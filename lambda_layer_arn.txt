@@ -1,1 +1,0 @@
-arn:aws:lambda:eu-west-1:486652066693:layer:swift-4-2-1:11

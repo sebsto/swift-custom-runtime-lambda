@@ -1,7 +1,8 @@
 .DS_Store
-/.build
-/Packages
-/*.xcodeproj
-/lambda 
-/Package.resolved
-/lambda_layer_arn.txt
+.build
+Packages
+*.xcodeproj
+lambda 
+Package.resolved
+lambda_layer_arn.txt
+*.webloc
